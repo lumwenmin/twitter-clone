@@ -31,6 +31,11 @@ export default function Likes({
           .match({ user_id: user.id, tweet_id: tweet.id });
         router.refresh();
       } else {
+        addOptimisticTweet({
+          ...tweet,
+          likes: tweet.likes + 1,
+          user_has_liked_tweet: !tweet.user_has_liked_tweet,
+        });
         await supabase
           .from("likes")
           .insert({ user_id: user.id, tweet_id: tweet.id });
@@ -38,5 +43,11 @@ export default function Likes({
       }
     }
   };
-  return <button onClick={handleLikes}>{tweet.likes} Likes</button>;
+  return (
+    <>
+      <form action={handleLikes}>
+        <button type="submit">{tweet.likes} Likes</button>
+      </form>
+    </>
+  );
 }
